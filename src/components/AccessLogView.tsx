@@ -4,29 +4,20 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ClipboardList, Check, X, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { AccessLog } from '@/types/vehicle';
+import type { LogAcessoDB } from '@/types/vehicle';
 
 interface AccessLogViewProps {
-  logs: AccessLog[];
+  logs: LogAcessoDB[];
   onClearLogs: () => void;
 }
 
 export function AccessLogView({ logs, onClearLogs }: AccessLogViewProps) {
   const formatTime = (timestamp: string) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString('pt-BR', { 
-      hour: '2-digit', 
-      minute: '2-digit', 
-      second: '2-digit' 
-    });
+    return new Date(timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   };
 
   const formatDate = (timestamp: string) => {
-    const date = new Date(timestamp);
-    return date.toLocaleDateString('pt-BR', { 
-      day: '2-digit', 
-      month: '2-digit' 
-    });
+    return new Date(timestamp).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
   };
 
   return (
@@ -38,12 +29,7 @@ export function AccessLogView({ logs, onClearLogs }: AccessLogViewProps) {
             Log de Acessos
           </CardTitle>
           {logs.length > 0 && (
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={onClearLogs}
-              className="text-muted-foreground hover:text-destructive"
-            >
+            <Button variant="ghost" size="sm" onClick={onClearLogs} className="text-muted-foreground hover:text-destructive">
               <Trash2 className="h-4 w-4 mr-1" />
               Limpar
             </Button>
@@ -70,47 +56,31 @@ export function AccessLogView({ logs, onClearLogs }: AccessLogViewProps) {
               </TableHeader>
               <TableBody>
                 {logs.map((log) => (
-                  <TableRow 
+                  <TableRow
                     key={log.id}
                     className={cn(
                       "transition-colors",
-                      log.accessGranted 
-                        ? "hover:bg-success/5" 
-                        : "hover:bg-destructive/5"
+                      log.status_acesso === 'Autorizado' ? "hover:bg-success/5" : "hover:bg-destructive/5"
                     )}
                   >
                     <TableCell>
                       <div className={cn(
                         "flex items-center justify-center w-8 h-8 rounded-full",
-                        log.accessGranted 
-                          ? "bg-success/20 text-success" 
-                          : "bg-destructive/20 text-destructive"
+                        log.status_acesso === 'Autorizado' ? "bg-success/20 text-success" : "bg-destructive/20 text-destructive"
                       )}>
-                        {log.accessGranted ? (
-                          <Check className="h-4 w-4" />
-                        ) : (
-                          <X className="h-4 w-4" />
-                        )}
+                        {log.status_acesso === 'Autorizado' ? <Check className="h-4 w-4" /> : <X className="h-4 w-4" />}
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="font-mono font-medium">
-                        {log.plate}
-                      </span>
-                      {log.model && (
-                        <span className="block text-xs text-muted-foreground">
-                          {log.model}
-                        </span>
-                      )}
+                      <span className="font-mono font-medium">{log.placa}</span>
+                      {log.modelo && <span className="block text-xs text-muted-foreground">{log.modelo}</span>}
                     </TableCell>
                     <TableCell className="hidden sm:table-cell text-muted-foreground">
-                      {log.ownerName || '—'}
+                      {log.proprietario || '—'}
                     </TableCell>
                     <TableCell className="text-right">
-                      <span className="text-sm">{formatTime(log.timestamp)}</span>
-                      <span className="block text-xs text-muted-foreground">
-                        {formatDate(log.timestamp)}
-                      </span>
+                      <span className="text-sm">{formatTime(log.horario)}</span>
+                      <span className="block text-xs text-muted-foreground">{formatDate(log.horario)}</span>
                     </TableCell>
                   </TableRow>
                 ))}

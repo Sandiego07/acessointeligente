@@ -14,7 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      logs_acesso: {
+        Row: {
+          foto_url: string | null
+          horario: string
+          id: string
+          modelo: string | null
+          placa: string
+          proprietario: string | null
+          status_acesso: string
+        }
+        Insert: {
+          foto_url?: string | null
+          horario?: string
+          id?: string
+          modelo?: string | null
+          placa: string
+          proprietario?: string | null
+          status_acesso: string
+        }
+        Update: {
+          foto_url?: string | null
+          horario?: string
+          id?: string
+          modelo?: string | null
+          placa?: string
+          proprietario?: string | null
+          status_acesso?: string
+        }
+        Relationships: []
+      }
+      veiculos: {
+        Row: {
+          cor: string | null
+          data_cadastro: string
+          id: string
+          modelo: string
+          placa: string
+          proprietario: string
+          status: boolean
+        }
+        Insert: {
+          cor?: string | null
+          data_cadastro?: string
+          id?: string
+          modelo: string
+          placa: string
+          proprietario: string
+          status?: boolean
+        }
+        Update: {
+          cor?: string | null
+          data_cadastro?: string
+          id?: string
+          modelo?: string
+          placa?: string
+          proprietario?: string
+          status?: boolean
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

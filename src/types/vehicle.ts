@@ -1,3 +1,25 @@
+// Database types matching Supabase tables
+export interface VeiculoDB {
+  id: string;
+  placa: string;
+  proprietario: string;
+  modelo: string;
+  cor: string;
+  status: boolean;
+  data_cadastro: string;
+}
+
+export interface LogAcessoDB {
+  id: string;
+  placa: string;
+  horario: string;
+  status_acesso: 'Autorizado' | 'Negado';
+  proprietario: string | null;
+  modelo: string | null;
+  foto_url: string | null;
+}
+
+// Legacy types for compatibility
 export interface Vehicle {
   id: string;
   plate: string;
