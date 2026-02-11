@@ -9,7 +9,7 @@ import { Shield, LogIn, UserPlus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [mode, setMode] = useState<'login' | 'signup' | 'reset'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,7 +21,17 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      if (isLogin) {
+      if (mode === 'reset') {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin,
+        });
+        if (error) throw error;
+        toast({
+          title: 'Email enviado!',
+          description: 'Verifique sua caixa de entrada para redefinir a senha.',
+        });
+        setMode('login');
+      } else if (mode === 'login') {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         navigate('/');
@@ -59,7 +69,7 @@ const Auth = () => {
           </div>
           <CardTitle className="text-xl">Controle de Acesso Veicular</CardTitle>
           <p className="text-sm text-muted-foreground">
-            {isLogin ? 'Entre para acessar o sistema' : 'Crie sua conta de operador'}
+            {mode === 'login' ? 'Entre para acessar o sistema' : mode === 'signup' ? 'Crie sua conta de operador' : 'Informe seu email para redefinir a senha'}
           </p>
         </CardHeader>
         <CardContent>
@@ -75,41 +85,54 @@ const Auth = () => {
                 required
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                minLength={6}
-              />
-            </div>
+            {mode !== 'reset' && (
+              <div className="space-y-2">
+                <Label htmlFor="password">Senha</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  minLength={6}
+                />
+              </div>
+            )}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? (
                 <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-              ) : isLogin ? (
+              ) : mode === 'login' ? (
                 <>
                   <LogIn className="mr-2 h-4 w-4" />
                   Entrar
                 </>
-              ) : (
+              ) : mode === 'signup' ? (
                 <>
                   <UserPlus className="mr-2 h-4 w-4" />
                   Criar Conta
                 </>
+              ) : (
+                'Enviar link de redefinição'
               )}
             </Button>
           </form>
-          <div className="mt-4 text-center">
+          <div className="mt-4 text-center space-y-2">
+            {mode === 'login' && (
+              <button
+                type="button"
+                onClick={() => setMode('reset')}
+                className="block w-full text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                Esqueceu a senha?
+              </button>
+            )}
             <button
               type="button"
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
+              className="block w-full text-sm text-muted-foreground hover:text-primary transition-colors"
             >
-              {isLogin ? 'Não tem conta? Cadastre-se' : 'Já tem conta? Faça login'}
+              {mode === 'login' ? 'Não tem conta? Cadastre-se' : 'Já tem conta? Faça login'}
             </button>
           </div>
         </CardContent>
