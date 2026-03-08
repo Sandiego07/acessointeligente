@@ -19,36 +19,49 @@ Deno.serve(async (req) => {
       );
     }
 
-    const { placa } = await req.json();
+    const body = await req.json();
+    const placa = body.placa?.toString().toUpperCase().trim() || null;
+    const tag = body.tag?.toString().toUpperCase().trim() || null;
 
-    if (!placa || typeof placa !== "string") {
+    if (!placa && !tag) {
       return new Response(
-        JSON.stringify({ error: "Campo 'placa' é obrigatório (string)." }),
+        JSON.stringify({ error: "Informe 'placa' ou 'tag' para verificar." }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Check if plate exists and is active
-    const { data: veiculo, error: veiculoError } = await supabase
-      .from("veiculos")
-      .select("*")
-      .eq("placa", placa.toUpperCase().trim())
-      .maybeSingle();
+    let veiculo = null;
 
-    if (veiculoError) {
-      throw new Error(`Database error: ${veiculoError.message}`);
+    // Try tag first, then plate
+    if (tag) {
+      const { data, error } = await supabase
+        .from("veiculos")
+        .select("*")
+        .eq("tag", tag)
+        .maybeSingle();
+      if (error) throw new Error(`Database error: ${error.message}`);
+      veiculo = data;
+    }
+
+    if (!veiculo && placa) {
+      const { data, error } = await supabase
+        .from("veiculos")
+        .select("*")
+        .eq("placa", placa)
+        .maybeSingle();
+      if (error) throw new Error(`Database error: ${error.message}`);
+      veiculo = data;
     }
 
     const autorizado = !!(veiculo && veiculo.status === true);
 
     // Log access
     const { error: logError } = await supabase.from("logs_acesso").insert({
-      placa: placa.toUpperCase().trim(),
+      placa: veiculo?.placa || placa || tag || "DESCONHECIDO",
       status_acesso: autorizado ? "Autorizado" : "Negado",
       proprietario: veiculo?.proprietario || null,
       modelo: veiculo?.modelo || null,
@@ -61,7 +74,8 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         autorizado,
-        placa: placa.toUpperCase().trim(),
+        placa: veiculo?.placa || placa || null,
+        tag: veiculo?.tag || tag || null,
         proprietario: veiculo?.proprietario || null,
         modelo: veiculo?.modelo || null,
       }),

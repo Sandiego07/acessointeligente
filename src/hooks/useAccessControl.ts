@@ -120,7 +120,7 @@ export function useAccessControl() {
 
     // Log to database
     await supabase.from('logs_acesso').insert({
-      placa: plate.toUpperCase(),
+      placa: veiculo?.placa || input,
       status_acesso: autorizado ? 'Autorizado' : 'Negado',
       proprietario: veiculo?.proprietario || null,
       modelo: veiculo?.modelo || null,
@@ -128,7 +128,7 @@ export function useAccessControl() {
 
     if (autorizado) {
       await sendGateCommand();
-      setGateState({ isOpen: true, lastCommandTime: now, lastPlate: plate });
+      setGateState({ isOpen: true, lastCommandTime: now, lastPlate: input });
     }
   }, [vehicles, gateState, sendGateCommand]);
 
