@@ -105,15 +105,16 @@ export function useAccessControl() {
     }
   }, []);
 
-  const processPlateDetection = useCallback(async (plate: string) => {
+  const processPlateDetection = useCallback(async (plateOrTag: string) => {
     const now = Date.now();
-    if (gateState.lastPlate === plate && now - gateState.lastCommandTime < DEBOUNCE_TIME_MS) {
-      console.log(`[DEBOUNCE] Ignoring repeated detection of ${plate}`);
+    const input = plateOrTag.toUpperCase().trim();
+    if (gateState.lastPlate === input && now - gateState.lastCommandTime < DEBOUNCE_TIME_MS) {
+      console.log(`[DEBOUNCE] Ignoring repeated detection of ${input}`);
       return;
     }
 
     const veiculo = vehicles.find(
-      (v) => v.placa.toUpperCase() === plate.toUpperCase() && v.status === true
+      (v) => (v.placa.toUpperCase() === input || v.tag.toUpperCase() === input) && v.status === true
     );
     const autorizado = !!veiculo;
 
