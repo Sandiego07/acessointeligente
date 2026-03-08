@@ -107,8 +107,8 @@ export function VehicleManagement({ vehicles, onAddVehicle, onUpdateVehicle, onD
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="tag">Nº da TAG *</Label>
-                    <Input id="tag" placeholder="000123" value={formData.tag} onChange={(e) => setFormData(p => ({ ...p, tag: e.target.value.toUpperCase() }))} required className="font-mono" />
+                    <Label htmlFor="tag">Nº da TAG</Label>
+                    <Input id="tag" placeholder="000123" value={formData.tag} onChange={(e) => setFormData(p => ({ ...p, tag: e.target.value.toUpperCase() }))} className="font-mono" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="tipo">Tipo *</Label>
