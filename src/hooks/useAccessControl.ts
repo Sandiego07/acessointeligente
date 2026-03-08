@@ -68,13 +68,16 @@ export function useAccessControl() {
     }
   }, [gateState.isOpen]);
 
-  const addVehicle = useCallback(async (vehicle: { placa: string; proprietario: string; modelo: string; cor: string; status: boolean }) => {
+  const addVehicle = useCallback(async (vehicle: { placa: string; proprietario: string; modelo: string; cor: string; status: boolean; tag: string; tipo: string; marca: string }) => {
     const { error } = await supabase.from('veiculos').insert({
       placa: vehicle.placa.toUpperCase().trim(),
       proprietario: vehicle.proprietario,
       modelo: vehicle.modelo,
       cor: vehicle.cor,
       status: vehicle.status,
+      tag: vehicle.tag.toUpperCase().trim(),
+      tipo: vehicle.tipo,
+      marca: vehicle.marca,
     });
     if (!error) fetchVehicles();
     return error;
