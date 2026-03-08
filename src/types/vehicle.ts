@@ -7,6 +7,9 @@ export interface VeiculoDB {
   cor: string;
   status: boolean;
   data_cadastro: string;
+  tag: string;
+  tipo: string;
+  marca: string;
 }
 
 export interface LogAcessoDB {
