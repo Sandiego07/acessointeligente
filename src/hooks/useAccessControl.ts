@@ -75,7 +75,7 @@ export function useAccessControl() {
       modelo: vehicle.modelo,
       cor: vehicle.cor,
       status: vehicle.status,
-      tag: vehicle.tag.toUpperCase().trim(),
+      tag: vehicle.tag?.trim() ? vehicle.tag.toUpperCase().trim() : null,
       tipo: vehicle.tipo,
       marca: vehicle.marca,
     });
