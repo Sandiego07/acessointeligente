@@ -49,28 +49,37 @@ export type Database = {
           cor: string | null
           data_cadastro: string
           id: string
+          marca: string
           modelo: string
           placa: string
           proprietario: string
           status: boolean
+          tag: string
+          tipo: string
         }
         Insert: {
           cor?: string | null
           data_cadastro?: string
           id?: string
+          marca?: string
           modelo: string
           placa: string
           proprietario: string
           status?: boolean
+          tag: string
+          tipo?: string
         }
         Update: {
           cor?: string | null
           data_cadastro?: string
           id?: string
+          marca?: string
           modelo?: string
           placa?: string
           proprietario?: string
           status?: boolean
+          tag?: string
+          tipo?: string
         }
         Relationships: []
       }
