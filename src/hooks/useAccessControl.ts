@@ -75,7 +75,7 @@ export function useAccessControl() {
       modelo: vehicle.modelo,
       cor: vehicle.cor,
       status: vehicle.status,
-      tag: vehicle.tag.toUpperCase().trim(),
+      tag: vehicle.tag?.trim() ? vehicle.tag.toUpperCase().trim() : null,
       tipo: vehicle.tipo,
       marca: vehicle.marca,
     });
@@ -105,21 +105,22 @@ export function useAccessControl() {
     }
   }, []);
 
-  const processPlateDetection = useCallback(async (plate: string) => {
+  const processPlateDetection = useCallback(async (plateOrTag: string) => {
     const now = Date.now();
-    if (gateState.lastPlate === plate && now - gateState.lastCommandTime < DEBOUNCE_TIME_MS) {
-      console.log(`[DEBOUNCE] Ignoring repeated detection of ${plate}`);
+    const input = plateOrTag.toUpperCase().trim();
+    if (gateState.lastPlate === input && now - gateState.lastCommandTime < DEBOUNCE_TIME_MS) {
+      console.log(`[DEBOUNCE] Ignoring repeated detection of ${input}`);
       return;
     }
 
     const veiculo = vehicles.find(
-      (v) => v.placa.toUpperCase() === plate.toUpperCase() && v.status === true
+      (v) => (v.placa.toUpperCase() === input || v.tag.toUpperCase() === input) && v.status === true
     );
     const autorizado = !!veiculo;
 
     // Log to database
     await supabase.from('logs_acesso').insert({
-      placa: plate.toUpperCase(),
+      placa: veiculo?.placa || input,
       status_acesso: autorizado ? 'Autorizado' : 'Negado',
       proprietario: veiculo?.proprietario || null,
       modelo: veiculo?.modelo || null,
@@ -127,7 +128,7 @@ export function useAccessControl() {
 
     if (autorizado) {
       await sendGateCommand();
-      setGateState({ isOpen: true, lastCommandTime: now, lastPlate: plate });
+      setGateState({ isOpen: true, lastCommandTime: now, lastPlate: input });
     }
   }, [vehicles, gateState, sendGateCommand]);
 

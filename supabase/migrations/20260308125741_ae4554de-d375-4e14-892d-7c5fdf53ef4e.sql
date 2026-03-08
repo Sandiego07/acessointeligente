@@ -1,0 +1,3 @@
+
+ALTER TABLE public.veiculos ALTER COLUMN tag DROP NOT NULL;
+ALTER TABLE public.veiculos ALTER COLUMN tag SET DEFAULT '';

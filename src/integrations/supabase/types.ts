@@ -54,7 +54,7 @@ export type Database = {
           placa: string
           proprietario: string
           status: boolean
-          tag: string
+          tag: string | null
           tipo: string
         }
         Insert: {
@@ -66,7 +66,7 @@ export type Database = {
           placa: string
           proprietario: string
           status?: boolean
-          tag: string
+          tag?: string | null
           tipo?: string
         }
         Update: {
@@ -78,7 +78,7 @@ export type Database = {
           placa?: string
           proprietario?: string
           status?: boolean
-          tag?: string
+          tag?: string | null
           tipo?: string
         }
         Relationships: []
