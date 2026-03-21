@@ -4,10 +4,10 @@ export interface VeiculoDB {
   placa: string;
   proprietario: string;
   modelo: string;
-  cor: string;
+  cor: string | null;
   status: boolean;
   data_cadastro: string;
-  tag: string;
+  tag: string | null;
   tipo: string;
   marca: string;
 }

@@ -43,7 +43,7 @@ export function VehicleManagement({ vehicles, onAddVehicle, onUpdateVehicle, onD
         cor: vehicle.cor || '',
         proprietario: vehicle.proprietario,
         status: vehicle.status,
-        tag: vehicle.tag,
+        tag: vehicle.tag || '',
         tipo: vehicle.tipo || 'carro',
         marca: vehicle.marca || '',
       });
@@ -79,7 +79,7 @@ export function VehicleManagement({ vehicles, onAddVehicle, onUpdateVehicle, onD
   const filteredVehicles = vehicles.filter((v) => {
     if (!searchTerm) return true;
     const term = searchTerm.toUpperCase();
-    return v.placa.toUpperCase().includes(term) || v.tag.toUpperCase().includes(term);
+    return v.placa.toUpperCase().includes(term) || (v.tag?.toUpperCase().includes(term) ?? false);
   });
 
   return (
@@ -193,7 +193,7 @@ export function VehicleManagement({ vehicles, onAddVehicle, onUpdateVehicle, onD
               <TableBody>
                 {filteredVehicles.map((v) => (
                   <TableRow key={v.id}>
-                    <TableCell className="font-mono font-medium">{v.tag}</TableCell>
+                    <TableCell className="font-mono font-medium">{v.tag || '—'}</TableCell>
                     <TableCell>
                       <span className="inline-flex items-center gap-1 text-xs">
                         {v.tipo === 'moto' ? <Bike className="h-3.5 w-3.5" /> : <Car className="h-3.5 w-3.5" />}
