@@ -114,7 +114,7 @@ export function useAccessControl() {
     }
 
     const veiculo = vehicles.find(
-      (v) => (v.placa.toUpperCase() === input || v.tag.toUpperCase() === input) && v.status === true
+      (v) => (v.placa.toUpperCase() === input || (v.tag?.toUpperCase() === input)) && v.status === true
     );
     const autorizado = !!veiculo;
 

@@ -193,7 +193,7 @@ export function VehicleManagement({ vehicles, onAddVehicle, onUpdateVehicle, onD
               <TableBody>
                 {filteredVehicles.map((v) => (
                   <TableRow key={v.id}>
-                    <TableCell className="font-mono font-medium">{v.tag}</TableCell>
+                    <TableCell className="font-mono font-medium">{v.tag || '—'}</TableCell>
                     <TableCell>
                       <span className="inline-flex items-center gap-1 text-xs">
                         {v.tipo === 'moto' ? <Bike className="h-3.5 w-3.5" /> : <Car className="h-3.5 w-3.5" />}
