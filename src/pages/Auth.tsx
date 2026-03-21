@@ -111,13 +111,6 @@ const Auth = () => {
                 Esqueceu a senha?
               </button>
             )}
-            <button
-              type="button"
-              onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
-              className="block w-full text-sm text-muted-foreground hover:text-primary transition-colors"
-            >
-              {mode === 'login' ? 'Não tem conta? Cadastre-se' : 'Já tem conta? Faça login'}
-            </button>
           </div>
         </CardContent>
       </Card>
