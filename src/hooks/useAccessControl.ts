@@ -87,6 +87,10 @@ export function useAccessControl() {
       .select()
       .single();
 
+    if (error) {
+      console.error('Erro ao inserir:', error);
+    }
+
     if (!error && data) {
       // Atualiza a tela na hora com o novo veículo
       setVehicles((prev) => [data as VeiculoDB, ...prev]);
@@ -110,16 +114,20 @@ export function useAccessControl() {
 
   // DELETAR VEÍCULO (Corrigido para ser instantâneo)
   const deleteVehicle = useCallback(async (id: string) => {
+    console.log('Tentando deletar ID:', id);
+
     const { error } = await supabase
       .from('veiculos')
       .delete()
       .eq('id', id);
 
+    console.log('Erro do Supabase:', error);
+
     if (!error) {
       // Remove da lista IMEDIATAMENTE na interface
       setVehicles((prev) => prev.filter((v) => v.id !== id));
     } else {
-      console.error("Erro ao deletar no Supabase:", error);
+      console.error('Erro ao deletar no Supabase:', error);
     }
     return error;
   }, []);
