@@ -96,11 +96,6 @@ const Auth = () => {
                   <LogIn className="mr-2 h-4 w-4" />
                   Entrar
                 </>
-              ) : mode === 'signup' ? (
-                <>
-                  <UserPlus className="mr-2 h-4 w-4" />
-                  Criar Conta
-                </>
               ) : (
                 'Enviar link de redefinição'
               )}
