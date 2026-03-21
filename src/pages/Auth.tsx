@@ -31,21 +31,10 @@ const Auth = () => {
           description: 'Verifique sua caixa de entrada para redefinir a senha.',
         });
         setMode('login');
-      } else if (mode === 'login') {
+      } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         navigate('/');
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: window.location.origin },
-        });
-        if (error) throw error;
-        toast({
-          title: 'Conta criada!',
-          description: 'Verifique seu email para confirmar o cadastro.',
-        });
       }
     } catch (error: any) {
       toast({
