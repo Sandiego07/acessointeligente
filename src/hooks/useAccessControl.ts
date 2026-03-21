@@ -4,7 +4,7 @@ import type { VeiculoDB, LogAcessoDB } from '@/types/vehicle';
 
 const DEBOUNCE_TIME_MS = 10000;
 
-// Simulated plates for demo
+// Placas simuladas para demonstração
 const DEMO_PLATES = ['ABC-1234', 'XYZ-5678', 'DEF-9012', 'GHI-3456', 'JKL-7890'];
 
 export function useAccessControl() {
@@ -20,7 +20,7 @@ export function useAccessControl() {
   const [loading, setLoading] = useState(true);
   const scanIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Fetch vehicles
+  // Busca veículos no banco
   const fetchVehicles = useCallback(async () => {
     const { data, error } = await supabase
       .from('veiculos')
@@ -29,7 +29,7 @@ export function useAccessControl() {
     if (!error && data) setVehicles(data);
   }, []);
 
-  // Fetch logs
+  // Busca logs no banco
   const fetchLogs = useCallback(async () => {
     const result = await supabase
       .from('logs_acesso')
@@ -39,12 +39,12 @@ export function useAccessControl() {
     if (!result.error && result.data) setAccessLogs(result.data as LogAcessoDB[]);
   }, []);
 
-  // Initial load
+  // Carga inicial
   useEffect(() => {
     Promise.all([fetchVehicles(), fetchLogs()]).then(() => setLoading(false));
   }, [fetchVehicles, fetchLogs]);
 
-  // Realtime subscription for logs
+  // Inscrição em tempo real para os Logs
   useEffect(() => {
     const channel = supabase
       .channel('logs_acesso_realtime')
@@ -60,7 +60,7 @@ export function useAccessControl() {
     return () => { supabase.removeChannel(channel); };
   }, []);
 
-  // Auto-close gate after 5s
+  // Fechamento automático do portão após 5s
   useEffect(() => {
     if (gateState.isOpen) {
       const t = setTimeout(() => setGateState((p) => ({ ...p, isOpen: false })), 5000);
@@ -68,32 +68,61 @@ export function useAccessControl() {
     }
   }, [gateState.isOpen]);
 
-  const addVehicle = useCallback(async (vehicle: { placa: string; proprietario: string; modelo: string; cor: string; status: boolean; tag: string; tipo: string; marca: string }) => {
-    const { error } = await supabase.from('veiculos').insert({
+  // ADICIONAR VEÍCULO (Com limpeza de strings vazias para NULL)
+  const addVehicle = useCallback(async (vehicle: { placa: string; proprietario: string; modelo: string; cor: string | null; status: boolean; tag: string | null; tipo: string; marca: string }) => {
+    const payload = {
       placa: vehicle.placa.toUpperCase().trim(),
-      proprietario: vehicle.proprietario,
-      modelo: vehicle.modelo,
-      cor: vehicle.cor,
+      proprietario: vehicle.proprietario.trim(),
+      modelo: vehicle.modelo.trim(),
+      cor: vehicle.cor?.trim() || null,
       status: vehicle.status,
       tag: vehicle.tag?.trim() ? vehicle.tag.toUpperCase().trim() : null,
       tipo: vehicle.tipo,
-      marca: vehicle.marca,
-    });
-    if (!error) fetchVehicles();
-    return error;
-  }, [fetchVehicles]);
+      marca: vehicle.marca.trim(),
+    };
 
+    const { data, error } = await supabase
+      .from('veiculos')
+      .insert(payload)
+      .select()
+      .single();
+
+    if (!error && data) {
+      // Atualiza a tela na hora com o novo veículo
+      setVehicles((prev) => [data as VeiculoDB, ...prev]);
+    }
+    return error;
+  }, []);
+
+  // ATUALIZAR VEÍCULO
   const updateVehicle = useCallback(async (id: string, updates: Partial<VeiculoDB>) => {
-    const { error } = await supabase.from('veiculos').update(updates).eq('id', id);
-    if (!error) fetchVehicles();
-    return error;
-  }, [fetchVehicles]);
+    const { error } = await supabase
+      .from('veiculos')
+      .update(updates)
+      .eq('id', id);
 
-  const deleteVehicle = useCallback(async (id: string) => {
-    const { error } = await supabase.from('veiculos').delete().eq('id', id);
-    if (!error) fetchVehicles();
+    if (!error) {
+      // Atualiza o estado local para refletir a mudança
+      setVehicles((prev) => prev.map(v => v.id === id ? { ...v, ...updates } : v));
+    }
     return error;
-  }, [fetchVehicles]);
+  }, []);
+
+  // DELETAR VEÍCULO (Corrigido para ser instantâneo)
+  const deleteVehicle = useCallback(async (id: string) => {
+    const { error } = await supabase
+      .from('veiculos')
+      .delete()
+      .eq('id', id);
+
+    if (!error) {
+      // Remove da lista IMEDIATAMENTE na interface
+      setVehicles((prev) => prev.filter((v) => v.id !== id));
+    } else {
+      console.error("Erro ao deletar no Supabase:", error);
+    }
+    return error;
+  }, []);
 
   const sendGateCommand = useCallback(async () => {
     const ip = localStorage.getItem('esp32_ip') || '192.168.1.100';
@@ -109,7 +138,6 @@ export function useAccessControl() {
     const now = Date.now();
     const input = plateOrTag.toUpperCase().trim();
     if (gateState.lastPlate === input && now - gateState.lastCommandTime < DEBOUNCE_TIME_MS) {
-      console.log(`[DEBOUNCE] Ignoring repeated detection of ${input}`);
       return;
     }
 
@@ -118,7 +146,6 @@ export function useAccessControl() {
     );
     const autorizado = !!veiculo;
 
-    // Log to database
     await supabase.from('logs_acesso').insert({
       placa: veiculo?.placa || input,
       status_acesso: autorizado ? 'Autorizado' : 'Negado',
@@ -134,13 +161,11 @@ export function useAccessControl() {
 
   const manualOpenGate = useCallback(async () => {
     const result = await sendGateCommand();
-
     await supabase.from('logs_acesso').insert({
       placa: 'MANUAL',
       status_acesso: 'Autorizado',
       proprietario: 'Abertura Manual',
     });
-
     setGateState((p) => ({ ...p, isOpen: true, lastCommandTime: Date.now() }));
     return result;
   }, [sendGateCommand]);
@@ -172,7 +197,6 @@ export function useAccessControl() {
   }, []);
 
   const clearLogs = useCallback(async () => {
-    // We don't delete from DB, just clear local view
     setAccessLogs([]);
   }, []);
 
