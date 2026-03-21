@@ -58,7 +58,7 @@ const Auth = () => {
           </div>
           <CardTitle className="text-xl">Controle de Acesso Veicular</CardTitle>
           <p className="text-sm text-muted-foreground">
-            {mode === 'login' ? 'Entre para acessar o sistema' : mode === 'signup' ? 'Crie sua conta de operador' : 'Informe seu email para redefinir a senha'}
+            {mode === 'login' ? 'Entre para acessar o sistema' : 'Informe seu email para redefinir a senha'}
           </p>
         </CardHeader>
         <CardContent>
