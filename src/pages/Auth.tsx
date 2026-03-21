@@ -9,7 +9,7 @@ import { Shield, LogIn, UserPlus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const Auth = () => {
-  const [mode, setMode] = useState<'login' | 'signup' | 'reset'>('login');
+  const [mode, setMode] = useState<'login' | 'reset'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -31,21 +31,10 @@ const Auth = () => {
           description: 'Verifique sua caixa de entrada para redefinir a senha.',
         });
         setMode('login');
-      } else if (mode === 'login') {
+      } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         navigate('/');
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: window.location.origin },
-        });
-        if (error) throw error;
-        toast({
-          title: 'Conta criada!',
-          description: 'Verifique seu email para confirmar o cadastro.',
-        });
       }
     } catch (error: any) {
       toast({
@@ -69,7 +58,7 @@ const Auth = () => {
           </div>
           <CardTitle className="text-xl">Controle de Acesso Veicular</CardTitle>
           <p className="text-sm text-muted-foreground">
-            {mode === 'login' ? 'Entre para acessar o sistema' : mode === 'signup' ? 'Crie sua conta de operador' : 'Informe seu email para redefinir a senha'}
+            {mode === 'login' ? 'Entre para acessar o sistema' : 'Informe seu email para redefinir a senha'}
           </p>
         </CardHeader>
         <CardContent>
@@ -107,11 +96,6 @@ const Auth = () => {
                   <LogIn className="mr-2 h-4 w-4" />
                   Entrar
                 </>
-              ) : mode === 'signup' ? (
-                <>
-                  <UserPlus className="mr-2 h-4 w-4" />
-                  Criar Conta
-                </>
               ) : (
                 'Enviar link de redefinição'
               )}
@@ -127,13 +111,6 @@ const Auth = () => {
                 Esqueceu a senha?
               </button>
             )}
-            <button
-              type="button"
-              onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
-              className="block w-full text-sm text-muted-foreground hover:text-primary transition-colors"
-            >
-              {mode === 'login' ? 'Não tem conta? Cadastre-se' : 'Já tem conta? Faça login'}
-            </button>
           </div>
         </CardContent>
       </Card>

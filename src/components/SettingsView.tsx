@@ -22,11 +22,18 @@ export function SettingsView() {
   const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/verificar-placa`;
 
   const pythonExample = `import requests
+from supabase import create_client
+
+# Autenticar primeiro para obter o token JWT
+supabase = create_client("${import.meta.env.VITE_SUPABASE_URL}", "${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}")
+session = supabase.auth.sign_in_with_password({"email": "seu@email.com", "password": "sua_senha"})
+token = session.session.access_token
 
 url = "${apiUrl}"
 headers = {
     "Content-Type": "application/json",
-    "apikey": "${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}"
+    "apikey": "${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}",
+    "Authorization": f"Bearer {token}"
 }
 
 response = requests.post(url, json={"placa": "ABC1234"}, headers=headers)
