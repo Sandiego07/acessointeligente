@@ -43,7 +43,7 @@ export function VehicleManagement({ vehicles, onAddVehicle, onUpdateVehicle, onD
         cor: vehicle.cor || '',
         proprietario: vehicle.proprietario,
         status: vehicle.status,
-        tag: vehicle.tag,
+        tag: vehicle.tag || '',
         tipo: vehicle.tipo || 'carro',
         marca: vehicle.marca || '',
       });
