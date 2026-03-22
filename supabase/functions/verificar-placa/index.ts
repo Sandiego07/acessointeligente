@@ -99,7 +99,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         autorizado,
-        placa: veiculo?.placa || placa || null,
+        placa: veiculo?.codigo || placa || null,
         tag: veiculo?.tag || tag || null,
         proprietario: veiculo?.proprietario || null,
         modelo: veiculo?.modelo || null,

@@ -150,12 +150,12 @@ export function useAccessControl() {
     }
 
     const veiculo = vehicles.find(
-      (v) => (v.placa.toUpperCase() === input || (v.tag?.toUpperCase() === input)) && v.status === true
+      (v) => (v.codigo.toUpperCase() === input || (v.tag?.toUpperCase() === input)) && v.status === true
     );
     const autorizado = !!veiculo;
 
     await supabase.from('logs_acesso').insert({
-      placa: veiculo?.placa || input,
+      placa: veiculo?.codigo || input,
       status_acesso: autorizado ? 'Autorizado' : 'Negado',
       proprietario: veiculo?.proprietario || null,
       modelo: veiculo?.modelo || null,

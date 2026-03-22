@@ -200,7 +200,7 @@ export function VehicleManagement({ vehicles, onAddVehicle, onUpdateVehicle, onD
                         {v.tipo === 'moto' ? 'Moto' : 'Carro'}
                       </span>
                     </TableCell>
-                    <TableCell className="font-mono">{v.placa}</TableCell>
+                    <TableCell className="font-mono">{v.codigo}</TableCell>
                     <TableCell className="hidden md:table-cell text-muted-foreground">
                       {v.marca} {v.modelo}
                       {v.cor && <span className="text-xs ml-1">({v.cor})</span>}
