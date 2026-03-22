@@ -46,36 +46,36 @@ export type Database = {
       }
       veiculos: {
         Row: {
+          codigo: string
           cor: string | null
           data_cadastro: string
           id: string
           marca: string
           modelo: string
-          placa: string
           proprietario: string
           status: boolean
           tag: string | null
           tipo: string
         }
         Insert: {
+          codigo: string
           cor?: string | null
           data_cadastro?: string
           id?: string
           marca?: string
           modelo: string
-          placa: string
           proprietario: string
           status?: boolean
           tag?: string | null
           tipo?: string
         }
         Update: {
+          codigo?: string
           cor?: string | null
           data_cadastro?: string
           id?: string
           marca?: string
           modelo?: string
-          placa?: string
           proprietario?: string
           status?: boolean
           tag?: string | null
