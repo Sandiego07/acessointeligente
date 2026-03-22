@@ -38,7 +38,7 @@ export function VehicleManagement({ vehicles, onAddVehicle, onUpdateVehicle, onD
     if (vehicle) {
       setEditingVehicle(vehicle);
       setFormData({
-        placa: vehicle.placa,
+        codigo: vehicle.codigo,
         modelo: vehicle.modelo,
         cor: vehicle.cor || '',
         proprietario: vehicle.proprietario,
