@@ -15,7 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 
 interface VehicleManagementProps {
   vehicles: VeiculoDB[];
-  onAddVehicle: (vehicle: { placa: string; proprietario: string; modelo: string; cor: string; status: boolean; tag: string; tipo: string; marca: string }) => Promise<any>;
+  onAddVehicle: (vehicle: { codigo: string; proprietario: string; modelo: string; cor: string; status: boolean; tag: string; tipo: string; marca: string }) => Promise<any>;
   onUpdateVehicle: (id: string, updates: Partial<VeiculoDB>) => Promise<any>;
   onDeleteVehicle: (id: string) => Promise<any>;
 }
