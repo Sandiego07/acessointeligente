@@ -15,12 +15,12 @@ import { useToast } from '@/hooks/use-toast';
 
 interface VehicleManagementProps {
   vehicles: VeiculoDB[];
-  onAddVehicle: (vehicle: { placa: string; proprietario: string; modelo: string; cor: string; status: boolean; tag: string; tipo: string; marca: string }) => Promise<any>;
+  onAddVehicle: (vehicle: { codigo: string; proprietario: string; modelo: string; cor: string; status: boolean; tag: string; tipo: string; marca: string }) => Promise<any>;
   onUpdateVehicle: (id: string, updates: Partial<VeiculoDB>) => Promise<any>;
   onDeleteVehicle: (id: string) => Promise<any>;
 }
 
-const emptyForm = { placa: '', modelo: '', cor: '', proprietario: '', status: true, tag: '', tipo: 'carro', marca: '' };
+const emptyForm = { codigo: '', modelo: '', cor: '', proprietario: '', status: true, tag: '', tipo: 'carro', marca: '' };
 
 export function VehicleManagement({ vehicles, onAddVehicle, onUpdateVehicle, onDeleteVehicle }: VehicleManagementProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -38,7 +38,7 @@ export function VehicleManagement({ vehicles, onAddVehicle, onUpdateVehicle, onD
     if (vehicle) {
       setEditingVehicle(vehicle);
       setFormData({
-        placa: vehicle.placa,
+        codigo: vehicle.codigo,
         modelo: vehicle.modelo,
         cor: vehicle.cor || '',
         proprietario: vehicle.proprietario,
@@ -79,7 +79,7 @@ export function VehicleManagement({ vehicles, onAddVehicle, onUpdateVehicle, onD
   const filteredVehicles = vehicles.filter((v) => {
     if (!searchTerm) return true;
     const term = searchTerm.toUpperCase();
-    return v.placa.toUpperCase().includes(term) || (v.tag?.toUpperCase().includes(term) ?? false);
+    return v.codigo.toUpperCase().includes(term) || (v.tag?.toUpperCase().includes(term) ?? false);
   });
 
   return (
@@ -125,8 +125,8 @@ export function VehicleManagement({ vehicles, onAddVehicle, onUpdateVehicle, onD
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="placa">Placa *</Label>
-                    <Input id="placa" placeholder="ABC-1234" value={formData.placa} onChange={(e) => setFormData(p => ({ ...p, placa: e.target.value.toUpperCase() }))} required className="font-mono" />
+                    <Label htmlFor="codigo">Placa *</Label>
+                    <Input id="codigo" placeholder="ABC-1234" value={formData.codigo} onChange={(e) => setFormData(p => ({ ...p, codigo: e.target.value.toUpperCase() }))} required className="font-mono" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="marca">Marca *</Label>
@@ -200,7 +200,7 @@ export function VehicleManagement({ vehicles, onAddVehicle, onUpdateVehicle, onD
                         {v.tipo === 'moto' ? 'Moto' : 'Carro'}
                       </span>
                     </TableCell>
-                    <TableCell className="font-mono">{v.placa}</TableCell>
+                    <TableCell className="font-mono">{v.codigo}</TableCell>
                     <TableCell className="hidden md:table-cell text-muted-foreground">
                       {v.marca} {v.modelo}
                       {v.cor && <span className="text-xs ml-1">({v.cor})</span>}

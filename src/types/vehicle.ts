@@ -1,7 +1,7 @@
 // Database types matching Supabase tables
 export interface VeiculoDB {
   id: string;
-  placa: string;
+  codigo: string;
   proprietario: string;
   modelo: string;
   cor: string | null;

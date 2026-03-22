@@ -76,7 +76,7 @@ Deno.serve(async (req) => {
       const { data, error } = await supabase
         .from("veiculos")
         .select("*")
-        .eq("placa", placa)
+        .eq("codigo", placa)
         .maybeSingle();
       if (error) throw new Error(`Database error: ${error.message}`);
       veiculo = data;
@@ -86,7 +86,7 @@ Deno.serve(async (req) => {
 
     // Log access
     const { error: logError } = await supabase.from("logs_acesso").insert({
-      placa: veiculo?.placa || placa || tag || "DESCONHECIDO",
+      placa: veiculo?.codigo || placa || tag || "DESCONHECIDO",
       status_acesso: autorizado ? "Autorizado" : "Negado",
       proprietario: veiculo?.proprietario || null,
       modelo: veiculo?.modelo || null,
@@ -99,7 +99,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         autorizado,
-        placa: veiculo?.placa || placa || null,
+        placa: veiculo?.codigo || placa || null,
         tag: veiculo?.tag || tag || null,
         proprietario: veiculo?.proprietario || null,
         modelo: veiculo?.modelo || null,
