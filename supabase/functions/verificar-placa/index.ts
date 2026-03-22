@@ -86,7 +86,7 @@ Deno.serve(async (req) => {
 
     // Log access
     const { error: logError } = await supabase.from("logs_acesso").insert({
-      placa: veiculo?.placa || placa || tag || "DESCONHECIDO",
+      placa: veiculo?.codigo || placa || tag || "DESCONHECIDO",
       status_acesso: autorizado ? "Autorizado" : "Negado",
       proprietario: veiculo?.proprietario || null,
       modelo: veiculo?.modelo || null,
