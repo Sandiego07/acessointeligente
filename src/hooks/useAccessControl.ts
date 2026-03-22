@@ -69,9 +69,9 @@ export function useAccessControl() {
   }, [gateState.isOpen]);
 
   // ADICIONAR VEÍCULO (Com limpeza de strings vazias para NULL)
-  const addVehicle = useCallback(async (vehicle: { placa: string; proprietario: string; modelo: string; cor: string | null; status: boolean; tag: string | null; tipo: string; marca: string }) => {
+  const addVehicle = useCallback(async (vehicle: { codigo: string; proprietario: string; modelo: string; cor: string | null; status: boolean; tag: string | null; tipo: string; marca: string }) => {
     const payload = {
-      placa: vehicle.placa.toUpperCase().trim(),
+      codigo: vehicle.codigo.toUpperCase().trim(),
       proprietario: vehicle.proprietario.trim(),
       modelo: vehicle.modelo.trim(),
       cor: vehicle.cor?.trim() || null,
