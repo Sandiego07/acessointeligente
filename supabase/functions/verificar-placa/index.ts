@@ -76,7 +76,7 @@ Deno.serve(async (req) => {
       const { data, error } = await supabase
         .from("veiculos")
         .select("*")
-        .eq("placa", placa)
+        .eq("codigo", placa)
         .maybeSingle();
       if (error) throw new Error(`Database error: ${error.message}`);
       veiculo = data;
