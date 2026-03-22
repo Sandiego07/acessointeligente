@@ -125,8 +125,8 @@ export function VehicleManagement({ vehicles, onAddVehicle, onUpdateVehicle, onD
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="placa">Placa *</Label>
-                    <Input id="placa" placeholder="ABC-1234" value={formData.placa} onChange={(e) => setFormData(p => ({ ...p, placa: e.target.value.toUpperCase() }))} required className="font-mono" />
+                    <Label htmlFor="codigo">Placa *</Label>
+                    <Input id="codigo" placeholder="ABC-1234" value={formData.codigo} onChange={(e) => setFormData(p => ({ ...p, codigo: e.target.value.toUpperCase() }))} required className="font-mono" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="marca">Marca *</Label>
