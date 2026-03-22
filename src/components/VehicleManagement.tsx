@@ -20,7 +20,7 @@ interface VehicleManagementProps {
   onDeleteVehicle: (id: string) => Promise<any>;
 }
 
-const emptyForm = { placa: '', modelo: '', cor: '', proprietario: '', status: true, tag: '', tipo: 'carro', marca: '' };
+const emptyForm = { codigo: '', modelo: '', cor: '', proprietario: '', status: true, tag: '', tipo: 'carro', marca: '' };
 
 export function VehicleManagement({ vehicles, onAddVehicle, onUpdateVehicle, onDeleteVehicle }: VehicleManagementProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
