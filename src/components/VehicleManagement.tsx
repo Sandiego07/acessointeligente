@@ -79,7 +79,7 @@ export function VehicleManagement({ vehicles, onAddVehicle, onUpdateVehicle, onD
   const filteredVehicles = vehicles.filter((v) => {
     if (!searchTerm) return true;
     const term = searchTerm.toUpperCase();
-    return v.placa.toUpperCase().includes(term) || (v.tag?.toUpperCase().includes(term) ?? false);
+    return v.codigo.toUpperCase().includes(term) || (v.tag?.toUpperCase().includes(term) ?? false);
   });
 
   return (
